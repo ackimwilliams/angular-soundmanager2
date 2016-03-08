@@ -5158,7 +5158,7 @@ ngSoundManager.directive('playPauseToggle', ['angularPlayer',
                         }
                     }
                 });
-                
+
                 element.bind('click', function(event) {
                     if(angularPlayer.isPlayingStatus()) {
                         //if playing then pause
@@ -5166,8 +5166,45 @@ ngSoundManager.directive('playPauseToggle', ['angularPlayer',
                     } else {
                         //else play if not playing
                         angularPlayer.play();
-                        
+
                     }
+                });
+            }
+        };
+    }
+]);
+
+ngSoundManager.directive('inlinePlayer', ['angularPlayer',
+    function(angularPlayer) {
+        return {
+            restrict: "EA",
+            scope: {
+              song: "=addSong"
+            },
+            link: function(scope, element, attrs) {
+                element.bind('click', function(event) {
+
+                    if (angularPlayer.getCurrentTrack() == scope.song.id) {
+                        if (angularPlayer.isPlayingStatus()) {
+                            $('.sm2_playing').removeClass('sm2_playing');
+
+                            angularPlayer.pause();
+                            element.addClass('sm2_paused');
+                        } else {
+                            angularPlayer.play();
+                            element.addClass('sm2_playing');
+                        }
+
+                        return;
+                    }
+
+                    $('.sm2_playing').removeClass('sm2_playing');
+                    $('.sm2_paused').removeClass('sm2_paused');
+                    angularPlayer.stop();
+
+                    var trackId = angularPlayer.addTrack(scope.song);
+                    angularPlayer.playTrack(trackId);
+                    element.addClass('sm2_playing');
                 });
             }
         };
